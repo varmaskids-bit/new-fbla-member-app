@@ -1,29 +1,42 @@
 {
   "expo": {
-    "name": "FBLA Member App",
-    "slug": "fbla-member-app",
+    "name": "fbla-app-final",
+    "slug": "fbla-app-final",
     "version": "1.0.0",
     "orientation": "portrait",
-    "updates": {
-      "fallbackToCacheTimeout": 0
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.fbla.memberapp"
-    },
-    "android": {
-      "package": "org.fbla.memberapp"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "e402518a-556b-4855-bf44-30a0eea4b3eb"
+      "bundleIdentifier": "com.varmapt1.fbla-app-final",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.varmapt1.fblaappfinal"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
     "plugins": [
-      "expo-asset"
-    ]
+      "expo-sqlite"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0e4a7397-a303-435b-b9ba-d155b1142ea1"
+      }
+    }
   }
 }
