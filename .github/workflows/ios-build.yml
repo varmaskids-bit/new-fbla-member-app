@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Setup EAS CLI
-        run: npm install -g @expo/eas-cli
+        run: npm install -g eas-cli
 
       - name: Login to EAS
         run: eas login --access-token ${{ secrets.EAS_TOKEN }}
