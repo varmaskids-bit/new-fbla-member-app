@@ -6,46 +6,97 @@ export type EventItem = {
   title: string;
   description?: string;
   location?: string;
-  startISO: string; // full timestamp
+  startISO: string;
 };
 
 const KEY = 'fbla:events:v1';
-type Ctx = {
+
+type EventsContextValue = {
   events: EventItem[];
-  add: (e: Omit<EventItem, 'id'>) => void;
+  add: (event: Omit<EventItem, 'id'>) => void;
   update: (id: string, patch: Partial<Omit<EventItem, 'id'>>) => void;
   remove: (id: string) => void;
-  refresh: () => Promise<void>;
 };
-const EventsContext = React.createContext<Ctx | undefined>(undefined);
+
+const EventsContext = React.createContext<EventsContextValue | undefined>(undefined);
+
 export function useEvents() {
-  const c = React.useContext(EventsContext);
-  if (!c) throw new Error('useEvents must be inside provider');
-  return c;
+  const ctx = React.useContext(EventsContext);
+  if (!ctx) throw new Error('useEvents must be used within EventsProvider');
+  return ctx;
 }
+
+const SAMPLE_EVENTS: EventItem[] = [
+  {
+    id: 'ev1',
+    title: 'Industry Connect Webinar',
+    description: 'Join us for an Industry Connect Webinar to network with business professionals and learn about career opportunities.',
+    location: 'Online Webinar',
+    startISO: new Date('2025-01-21T18:00:00').toISOString()
+  },
+  {
+    id: 'ev2',
+    title: 'National Career & Technical Education Month',
+    description: 'Celebrate National Career & Technical Education Month throughout February. Participate in various activities highlighting FBLA programs.',
+    location: 'Nationwide',
+    startISO: new Date('2026-02-01T09:00:00').toISOString()
+  },
+  {
+    id: 'ev3',
+    title: 'FBLA Week',
+    description: 'Celebrate FBLA Week with us on February 8-14, 2026! This week, held during National Career & Technical Education Month, is a highlight of the membership year.',
+    location: 'Chapter Activities',
+    startISO: new Date('2026-02-08T09:00:00').toISOString()
+  },
+  {
+    id: 'ev4',
+    title: 'Industry Connect Webinar',
+    description: 'Another opportunity to connect with industry professionals and explore career paths in business.',
+    location: 'Online Webinar',
+    startISO: new Date('2026-02-18T18:00:00').toISOString()
+  },
+  {
+    id: 'ev5',
+    title: 'Collegiate Officer Leadership Summit',
+    description: 'Launch your leadership journey at the Officer Leadership Summit on February 21, 2026 from 11:00 AM-1:00 PM ET! This exclusive virtual event brings together all Collegiate officers for a powerful session of leadership growth, networking, and FBLA inspiration.',
+    location: 'Virtual Summit',
+    startISO: new Date('2026-02-21T11:00:00').toISOString()
+  }
+];
+
 export function EventsProvider({ children }: { children: React.ReactNode }) {
   const [events, setEvents] = React.useState<EventItem[]>([]);
-  React.useEffect(() => { (async () => {
-    const raw = await AsyncStorage.getItem(KEY);
-    if (raw) setEvents(JSON.parse(raw));
-  })(); }, []);
-  React.useEffect(() => { AsyncStorage.setItem(KEY, JSON.stringify(events)).catch(()=>{}); }, [events]);
 
-  function add(e: Omit<EventItem, 'id'>) {
-    setEvents(s => [...s, { ...e, id: Date.now() + Math.random().toString(36).slice(2) }]);
+  React.useEffect(() => {
+    (async () => {
+      const raw = await AsyncStorage.getItem(KEY);
+      if (raw) {
+        setEvents(JSON.parse(raw));
+      } else {
+        setEvents(SAMPLE_EVENTS); // seed
+      }
+    })();
+  }, []);
+
+  React.useEffect(() => {
+    AsyncStorage.setItem(KEY, JSON.stringify(events)).catch(() => {});
+  }, [events]);
+
+  function add(event: Omit<EventItem, 'id'>) {
+    const id = String(Date.now()) + Math.random().toString(36).slice(2, 8);
+    setEvents((s) => [...s, { id, ...event }]);
   }
-  function update(id: string, patch: Partial<Omit<EventItem,'id'>>) {
-    setEvents(s => s.map(ev => ev.id === id ? { ...ev, ...patch } : ev));
+
+  function update(id: string, patch: Partial<Omit<EventItem, 'id'>>) {
+    setEvents((s) => s.map((e) => (e.id === id ? { ...e, ...patch } : e)));
   }
+
   function remove(id: string) {
-    setEvents(s => s.filter(ev => ev.id !== id));
+    setEvents((s) => s.filter((e) => e.id !== id));
   }
-  async function refresh() {
-    const raw = await AsyncStorage.getItem(KEY);
-    setEvents(raw ? JSON.parse(raw) : []);
-  }
+
   return (
-    <EventsContext.Provider value={{ events, add, update, remove, refresh }}>
+    <EventsContext.Provider value={{ events, add, update, remove }}>
       {children}
     </EventsContext.Provider>
   );

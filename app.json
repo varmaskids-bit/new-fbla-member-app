@@ -1,37 +1,44 @@
 {
   "expo": {
     "name": "FBLA Member App",
-    "slug": "fbla-member-app",
+    "slug": "fbla-app-final",
     "version": "1.0.0",
-    "scheme": "fbla",
     "orientation": "portrait",
-    "newArchEnabled": true,
     "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "description": "Official mobile app for FBLA members - Connect, learn, and engage with Future Business Leaders of America",
+    "primaryColor": "#004B87",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#101114"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "newArchEnabled": true,
-      "bundleIdentifier": "com.fblamember.app"
-    },
-    "android": {
-      "newArchEnabled": true,
-      "package": "com.fblamember.app",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#101114"
+      "bundleIdentifier": "com.varmapt1.fbla-app-final",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.varmapt1.fblaappfinal"
+    },
     "web": {
-      "bundler": "metro"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-asset",
-      "expo-splash-screen",
       "expo-sqlite"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0e4a7397-a303-435b-b9ba-d155b1142ea1"
+      }
+    }
   }
 }

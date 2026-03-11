@@ -1,68 +1,50 @@
 import * as SQLite from 'expo-sqlite';
-const db = SQLite.openDatabase('app.db'); // database file inside app sandbox
+const db = SQLite.openDatabaseSync('app.db'); // database file inside app sandbox
 
-export function initUsers() {
-  db.transaction(tx => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS users (
-        id TEXT PRIMARY KEY NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        username TEXT UNIQUE,
-        password TEXT NOT NULL,
-        name TEXT,
-        grade TEXT,
-        chapter TEXT
-      );`
-    );
-  });
+export async function initUsers() {
+  await db.execAsync(
+    `CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      username TEXT UNIQUE,
+      password TEXT NOT NULL,
+      name TEXT,
+      grade TEXT,
+      chapter TEXT
+    );`
+  );
 }
 
-export function insertUser(u: {
+export async function insertUser(u: {
   id: string; email: string; username?: string; password: string;
   name?: string; grade?: string; chapter?: string;
 }): Promise<void> {
-  return new Promise((res, rej) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        `INSERT INTO users (id,email,username,password,name,grade,chapter)
-         VALUES (?,?,?,?,?,?,?)`,
-        [u.id, u.email, u.username || null, u.password, u.name || null, u.grade || null, u.chapter || null],
-        () => res(),
-        (_, err) => { rej(err); return false; }
-      );
-    });
-  });
+  await db.runAsync(
+    `INSERT INTO users (id,email,username,password,name,grade,chapter)
+     VALUES (?,?,?,?,?,?,?)`,
+    [u.id, u.email, u.username || null, u.password, u.name || null, u.grade || null, u.chapter || null]
+  );
 }
 
-export function getUserByIdentifier(identifier: string, password: string): Promise<any | null> {
+export async function getUserByIdentifier(identifier: string, password: string): Promise<any | null> {
   const idLower = identifier.toLowerCase();
-  return new Promise((res) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        `SELECT * FROM users WHERE (lower(email)=? OR lower(username)=?) AND password=? LIMIT 1`,
-        [idLower, idLower, password],
-        (_, { rows }) => res(rows.length ? rows.item(0) : null),
-        () => { res(null); return false; }
-      );
-    });
-  });
+  const result = await db.getFirstAsync(
+    `SELECT * FROM users WHERE (lower(email)=? OR lower(username)=?) AND password=? LIMIT 1`,
+    [idLower, idLower, password]
+  );
+  return result || null;
 }
 
-export function emailOrUsernameExists(email: string, username?: string): Promise<{ email: boolean; username: boolean }> {
-  return new Promise((res) => {
-    db.transaction(tx => {
-      tx.executeSql(
-        `SELECT 
-          SUM(CASE WHEN lower(email)=? THEN 1 ELSE 0 END) AS emailHit,
-          SUM(CASE WHEN ?!='' AND lower(username)=? THEN 1 ELSE 0 END) AS userHit
-         FROM users`,
-        [email.toLowerCase(), (username||'').toLowerCase(), (username||'').toLowerCase()],
-        (_, { rows }) => {
-          const r = rows.item(0);
-          res({ email: r.emailHit > 0, username: r.userHit > 0 });
-        },
-        () => { res({ email: false, username: false }); return false; }
-      );
-    });
-  });
+export async function emailOrUsernameExists(email: string, username?: string): Promise<{ email: boolean; username: boolean }> {
+  const result = await db.getFirstAsync<{ emailHit: number; userHit: number }>(
+    `SELECT 
+      SUM(CASE WHEN lower(email)=? THEN 1 ELSE 0 END) as emailHit,
+      SUM(CASE WHEN lower(username)=? AND username IS NOT NULL THEN 1 ELSE 0 END) as userHit
+     FROM users`,
+    [email.toLowerCase(), (username || '').toLowerCase()]
+  );
+  return { 
+    email: result ? result.emailHit > 0 : false, 
+    username: result ? result.userHit > 0 : false 
+  };
 }

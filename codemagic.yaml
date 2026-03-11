@@ -1,0 +1,22 @@
+workflows:
+  ios-workflow:
+    name: iOS Build and Submit
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      cocoapods: default
+      node: latest
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+      - name: Install EAS CLI
+        script: npm install -g eas-cli
+      - name: Login to EAS
+        script: eas login --access-token $EAS_TOKEN
+      - name: Build iOS
+        script: eas build --platform ios --profile production --non-interactive
+      - name: Submit to App Store
+        script: eas submit --platform ios --non-interactive
+    artifacts:
+      - build/ios/build/Products/**/*.ipa
+      - /tmp/xcodebuild_logs/**/*.log

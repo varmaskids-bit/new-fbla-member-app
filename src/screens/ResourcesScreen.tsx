@@ -25,8 +25,9 @@ export default function ResourcesScreen() {
 
   async function pickFile() {
     const res = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory:true, multiple:false });
-    if (res.type === 'success') {
-      addFile(path.map(p=>p.id), { name: res.name, uri: res.uri });
+    if (!res.canceled && res.assets && res.assets.length > 0) {
+      const file = res.assets[0];
+      addFile(path.map(p=>p.id), { name: file.name, uri: file.uri });
     }
   }
 

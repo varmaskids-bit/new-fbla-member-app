@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNews } from '../context/NewsContext';
 
 export default function NewsFeedScreen() {
@@ -24,9 +25,40 @@ export default function NewsFeedScreen() {
     ]);
   }
 
+  async function clearAllData() {
+    Alert.alert(
+      'Clear All Data',
+      'This will delete all data and reload the app with sample data. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear & Reload',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await AsyncStorage.clear();
+              Alert.alert('Success', 'Data cleared. Please restart the app.', [
+                { text: 'OK', onPress: () => {} }
+              ]);
+            } catch (e) {
+              Alert.alert('Error', 'Failed to clear data');
+            }
+          }
+        }
+      ]
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.addBtn} onPress={startNew}><Text style={styles.addText}>+ Announcement</Text></TouchableOpacity>
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.addBtn} onPress={startNew}>
+          <Text style={styles.addText}>+ Announcement</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.clearBtn} onPress={clearAllData}>
+          <Text style={styles.clearText}>Clear Data</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={items}
         keyExtractor={i=>i.id}
@@ -68,8 +100,11 @@ export default function NewsFeedScreen() {
 
 const styles=StyleSheet.create({
   container:{ flex:1, backgroundColor:'#fff', padding:12 },
-  addBtn:{ backgroundColor:'#1E66FF', padding:12, borderRadius:8, alignItems:'center', marginBottom:12 },
+  topBar:{ flexDirection:'row', marginBottom:12, gap:8 },
+  addBtn:{ flex:1, backgroundColor:'#1E66FF', padding:12, borderRadius:8, alignItems:'center' },
   addText:{ color:'#fff', fontWeight:'700' },
+  clearBtn:{ paddingVertical:12, paddingHorizontal:16, borderRadius:8, borderWidth:1, borderColor:'#D00' },
+  clearText:{ color:'#D00', fontWeight:'700' },
   empty:{ textAlign:'center', marginTop:40, color:'#666' },
   card:{ flexDirection:'row', borderWidth:1, borderColor:'#dbe9ff', padding:12, borderRadius:8, marginBottom:10 },
   title:{ fontSize:16, fontWeight:'700' },

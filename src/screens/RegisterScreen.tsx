@@ -60,7 +60,7 @@ export default function RegisterScreen() {
     }
   }
 
-  function ensureVisible(ref: React.RefObject<TextInput>) {
+  function ensureVisible(ref: React.RefObject<TextInput | null>) {
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
       ref.current?.focus();

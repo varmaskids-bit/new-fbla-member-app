@@ -1,9 +1,11 @@
 import React from 'react';
+import Navigation from './src/navigation';
 import { AuthProvider } from './src/context/AuthContext';
+import { NewsProvider } from './src/context/NewsContext';
 import { EventsProvider } from './src/context/EventsContext';
 import { ResourcesProvider } from './src/context/ResourcesContext';
-import { NewsProvider } from './src/context/NewsContext';
-import Navigation from './src/navigation';
+import { ProfilesProvider } from './src/context/ProfilesContext';
+import { SocialProvider } from './src/context/SocialContext';
 
 export default function App() {
   return (
@@ -11,7 +13,11 @@ export default function App() {
       <NewsProvider>
         <EventsProvider>
           <ResourcesProvider>
-            <Navigation />
+            <ProfilesProvider>
+              <SocialProvider>
+                <Navigation />
+              </SocialProvider>
+            </ProfilesProvider>
           </ResourcesProvider>
         </EventsProvider>
       </NewsProvider>

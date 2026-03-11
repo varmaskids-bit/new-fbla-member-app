@@ -16,7 +16,9 @@ const Tabs = createBottomTabNavigator();
 
 function AppTabs() {
   return (
-    <Tabs.Navigator screenOptions={{ headerShown: false }}>
+    <Tabs.Navigator
+      id="AppTabs"
+      screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="Home" component={HomeScreen} />
       <Tabs.Screen name="Events" component={EventsScreen} />
       <Tabs.Screen name="News" component={NewsScreen} />
@@ -31,7 +33,9 @@ export default function RootNavigator() {
   return (
     <NavigationContainer theme={DarkTheme}>
       {!ctx.isSignedIn ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+          id="AuthStack"
+          screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
         </Stack.Navigator>

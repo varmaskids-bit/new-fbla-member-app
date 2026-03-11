@@ -1,44 +1,34 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
-export default function LoginScreen() {
-  const auth = useAuth();
-  const nav = useNavigation<any>();
-  const [identifier, setIdentifier] = React.useState('');
-  const [password, setPassword] = React.useState('');
+export default function LoginScreen({ navigation }: any) {
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  function validate(): string | null {
-    if (!identifier.trim()) return 'Username or email is required';
-    if (!password) return 'Password is required';
-    return null;
-  }
-
-  async function onLogin() {
-    const err = validate();
-    if (err) return Alert.alert('Validation', err);
+  async function handleLogin() {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please enter email/username and password');
+      return;
+    }
     try {
-      await auth.login(identifier.trim(), password);
-      // Do not navigate/reset; Navigation switches to Main when currentUser is set
+      await login(email.trim(), password);
     } catch (e: any) {
-      Alert.alert('Login failed', e.message || String(e));
+      Alert.alert('Login Failed', e.message);
     }
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-
+      <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 15, marginLeft:175}} />
+      <Text style={styles.title}>FBLA Member App</Text>
       <TextInput
-        placeholder="Username or Email"
-        value={identifier}
-        onChangeText={setIdentifier}
+        placeholder="Email or Username"
+        value={email}
+        onChangeText={setEmail}
         style={styles.input}
         autoCapitalize="none"
-        textContentType="none"
-        autoComplete="off"
-        importantForAutofill="no"
       />
       <TextInput
         placeholder="Password"
@@ -46,34 +36,23 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         style={styles.input}
         secureTextEntry
-        autoCapitalize="none"
-        autoCorrect={false}
-        textContentType="none"
-        autoComplete="off"
-        importantForAutofill="no"
       />
-
-      <TouchableOpacity style={styles.button} onPress={onLogin}>
-        <Text style={styles.buttonText}>Sign in</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-
-      <View style={styles.row}>
-        <Text style={styles.smallText}>No account?</Text>
-        <TouchableOpacity onPress={() => nav.navigate('Register')}>
-          <Text style={styles.linkText}> Sign up</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.link}>Don't have an account? Register</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fff', justifyContent: 'center' },
-  title: { fontSize: 22, fontWeight: '700', color: '#1E66FF', marginBottom: 16, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#dbe9ff', padding: 12, borderRadius: 8, marginBottom: 10, backgroundColor: '#fff' },
-  button: { backgroundColor: '#1E66FF', padding: 14, borderRadius: 8, alignItems: 'center', marginTop: 4 },
-  buttonText: { color: 'white', fontWeight: '700' },
-  row: { flexDirection: 'row', marginTop: 12, alignItems: 'center', justifyContent: 'center' },
-  smallText: { color: '#666' },
-  linkText: { color: '#1E66FF', fontWeight: '700' },
+  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#fff' },
+  logo: { width: 40, height: 40, alignSelf: 'center', marginBottom: 20 },  // Reduced from 60x60 to 40x40
+  title: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 5 },
+  button: { backgroundColor: '#1E66FF', padding: 15, borderRadius: 5, alignItems: 'center' },
+  buttonText: { color: '#fff', fontSize: 16 },
+  link: { textAlign: 'center', marginTop: 10, color: '#1E66FF' },
 });
