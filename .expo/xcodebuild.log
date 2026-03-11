@@ -1,3 +1,0 @@
-Command line invocation:
-    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace /Users/varmapenmethsa/visual_studio/fbla-member-app/ios/FBLAMemberAppA1.xcworkspace -configuration Debug -scheme FBLAMemberAppA1 -destination id=279C42B1-BB07-472E-87D1-571C676BA0CD
-

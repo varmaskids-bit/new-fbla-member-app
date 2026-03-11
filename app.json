@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "fbla-app-final",
-    "slug": "fbla-app-final",
+    "name": "FBLA Member App",
+    "slug": "fbla-member-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "description": "Official mobile app for FBLA members - Connect, learn, and engage with Future Business Leaders of America",
+    "primaryColor": "#004B87",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
