@@ -3,35 +3,27 @@
     "name": "FBLA Member App",
     "slug": "fbla-member-app",
     "version": "1.0.0",
-    "scheme": "fbla",
     "orientation": "portrait",
-    "newArchEnabled": true,
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#101114"
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "newArchEnabled": true,
-      "bundleIdentifier": "com.fblamember.app"
+      "bundleIdentifier": "org.fbla.memberapp"
     },
     "android": {
-      "newArchEnabled": true,
-      "package": "com.fblamember.app",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#101114"
+      "package": "org.fbla.memberapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e402518a-556b-4855-bf44-30a0eea4b3eb"
       }
     },
-    "web": {
-      "bundler": "metro"
-    },
     "plugins": [
-      "expo-asset",
-      "expo-splash-screen",
-      "expo-sqlite"
+      "expo-asset"
     ]
   }
 }

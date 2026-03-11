@@ -1,29 +1,32 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useAuth } from '../context/AuthContext';
+import { Image, TouchableOpacity, Text } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import NewsFeedScreen from '../screens/NewsFeedScreen';
 import EventsScreen from '../screens/EventsScreen';
 import ResourcesScreen from '../screens/ResourcesScreen';
 import ProfilesScreen from '../screens/ProfilesScreen';
-import NewsFeedScreen from '../screens/NewsFeedScreen';
 import SocialMediaScreen from '../screens/SocialMediaScreen';
+import { useAuth } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs() {
-  const auth = useAuth();
+  const { currentUser, logout } = useAuth();
   return (
     <Tab.Navigator
       initialRouteName="News"
       screenOptions={{
+        headerLeft: () => (  // Smaller logo for full visibility in top left
+          <Image source={require('../../assets/logo.png')} style={{ width: 65, height: 15, marginLeft: 10 }} />
+        ),
         headerRight: () => (
-          <TouchableOpacity onPress={() => auth.logout()} style={{ marginRight: 16 }}>
-            <Text style={{ color: '#1E66FF', fontWeight: '700' }}>Logout</Text>
+          <TouchableOpacity onPress={logout} style={{ marginRight: 10 }}>
+            <Text>Logout</Text>
           </TouchableOpacity>
         ),
       }}
@@ -38,8 +41,8 @@ function MainTabs() {
 }
 
 export default function Navigation() {
-  const auth = useAuth();
-  const isLoggedIn = !!auth.currentUser;
+  const { currentUser } = useAuth();
+  const isLoggedIn = !!currentUser;
 
   return (
     <NavigationContainer>
