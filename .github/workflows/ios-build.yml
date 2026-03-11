@@ -9,6 +9,8 @@ jobs:
   build-and-submit:
     name: Build and Submit iOS App
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
