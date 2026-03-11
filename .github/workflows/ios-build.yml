@@ -1,0 +1,36 @@
+name: Build and Submit iOS App to TestFlight
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-submit:
+    name: Build and Submit iOS App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup EAS CLI
+        run: npm install -g @expo/eas-cli
+
+      - name: Login to EAS
+        run: eas login --access-token ${{ secrets.EAS_TOKEN }}
+
+      - name: Build iOS app
+        run: eas build --platform ios --profile production --non-interactive
+
+      - name: Submit to TestFlight
+        run: eas submit --platform ios --profile production --non-interactive
