@@ -15,6 +15,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -68,144 +69,146 @@ export default function RegisterScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Register</Text>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView style={styles.container} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <Text style={styles.title}>Register</Text>
 
-        <TextInput
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-          style={styles.input}
-          autoCapitalize="none"
-          textContentType="none"
-          autoComplete="off"
-          importantForAutofill="no"
-        />
-        <TextInput
-          placeholder="Full name"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-          textContentType="none"
-          autoComplete="off"
-          importantForAutofill="no"
-        />
-        <TextInput
-          placeholder="Grade (e.g. 10)"
-          value={grade}
-          onChangeText={setGrade}
-          style={styles.input}
-          keyboardType="numeric"
-          textContentType="none"
-          autoComplete="off"
-          importantForAutofill="no"
-        />
-        <TextInput
-          placeholder="Chapter (e.g. Central HS)"
-          value={chapter}
-          onChangeText={setChapter}
-          style={styles.input}
-          textContentType="none"
-          autoComplete="off"
-          importantForAutofill="no"
-        />
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          textContentType="none"
-          autoComplete="off"
-          importantForAutofill="no"
-        />
-
-        <View style={styles.passRow}>
           <TextInput
-            ref={passRef}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            style={[styles.input, { flex: 1 }]}
-            secureTextEntry={!showPass}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+            style={styles.input}
             autoCapitalize="none"
-            autoCorrect={false}
-            // iOS: using oneTimeCode disables password manager overlays
-            textContentType="oneTimeCode"
+            textContentType="none"
             autoComplete="off"
             importantForAutofill="no"
-            onFocus={() => ensureVisible(passRef)}
           />
-          <TouchableOpacity
-            style={styles.eyeBtn}
-            onPress={() => {
-              setShowPass(p => !p);
-              setTimeout(() => passRef.current?.focus(), 0);
-            }}
-          >
-            <Text style={styles.eyeText}>{showPass ? 'Hide' : 'Show'}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.passRow}>
           <TextInput
-            ref={confirmRef}
-            placeholder="Confirm password"
-            value={confirm}
-            onChangeText={setConfirm}
-            style={[styles.input, { flex: 1 }]}
-            secureTextEntry={!showConfirm}
-            autoCapitalize="none"
-            autoCorrect={false}
-            textContentType="oneTimeCode"
+            placeholder="Full name"
+            value={name}
+            onChangeText={setName}
+            style={styles.input}
+            textContentType="none"
             autoComplete="off"
             importantForAutofill="no"
-            onFocus={() => ensureVisible(confirmRef)}
           />
-          <TouchableOpacity
-            style={styles.eyeBtn}
-            onPress={() => {
-              setShowConfirm(p => !p);
-              setTimeout(() => confirmRef.current?.focus(), 0);
-            }}
-          >
-            <Text style={styles.eyeText}>{showConfirm ? 'Hide' : 'Show'}</Text>
-          </TouchableOpacity>
-        </View>
+          <TextInput
+            placeholder="Grade (e.g. 10)"
+            value={grade}
+            onChangeText={setGrade}
+            style={styles.input}
+            keyboardType="numeric"
+            textContentType="none"
+            autoComplete="off"
+            importantForAutofill="no"
+          />
+          <TextInput
+            placeholder="Chapter (e.g. Central HS)"
+            value={chapter}
+            onChangeText={setChapter}
+            style={styles.input}
+            textContentType="none"
+            autoComplete="off"
+            importantForAutofill="no"
+          />
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            textContentType="none"
+            autoComplete="off"
+            importantForAutofill="no"
+          />
 
-        <Text style={styles.subLabel}>Role</Text>
-        <View style={styles.roleRow}>
-          {ROLES.map(r => (
+          <View style={styles.passRow}>
+            <TextInput
+              ref={passRef}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              style={[styles.input, { flex: 1 }]}
+              secureTextEntry={!showPass}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="oneTimeCode"
+              autoComplete="off"
+              importantForAutofill="no"
+              onFocus={() => ensureVisible(passRef)}
+            />
             <TouchableOpacity
-              key={r}
-              onPress={() => setRole(r)}
-              style={[styles.roleChip, role === r && styles.roleChipActive]}
+              style={styles.eyeBtn}
+              onPress={() => {
+                setShowPass(p => !p);
+                setTimeout(() => passRef.current?.focus(), 0);
+              }}
             >
-              <Text style={[styles.roleText, role === r && styles.roleTextActive]}>{r}</Text>
+              <Text style={styles.eyeText}>{showPass ? 'Hide' : 'Show'}</Text>
             </TouchableOpacity>
-          ))}
-        </View>
+          </View>
 
-        <TouchableOpacity style={styles.button} onPress={onRegister}>
-          <Text style={styles.buttonText}>Create account</Text>
-        </TouchableOpacity>
+          <View style={styles.passRow}>
+            <TextInput
+              ref={confirmRef}
+              placeholder="Confirm password"
+              value={confirm}
+              onChangeText={setConfirm}
+              style={[styles.input, { flex: 1 }]}
+              secureTextEntry={!showConfirm}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="oneTimeCode"
+              autoComplete="off"
+              importantForAutofill="no"
+              onFocus={() => ensureVisible(confirmRef)}
+            />
+            <TouchableOpacity
+              style={styles.eyeBtn}
+              onPress={() => {
+                setShowConfirm(p => !p);
+                setTimeout(() => confirmRef.current?.focus(), 0);
+              }}
+            >
+              <Text style={styles.eyeText}>{showConfirm ? 'Hide' : 'Show'}</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.bottomRow}>
-          <Text style={styles.smallText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => nav.navigate('Login')}>
-            <Text style={styles.linkText}> Sign in</Text>
+          <Text style={styles.subLabel}>Role</Text>
+          <View style={styles.roleRow}>
+            {ROLES.map(r => (
+              <TouchableOpacity
+                key={r}
+                onPress={() => setRole(r)}
+                style={[styles.roleChip, role === r && styles.roleChipActive]}
+              >
+                <Text style={[styles.roleText, role === r && styles.roleTextActive]}>{r}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={onRegister}>
+            <Text style={styles.buttonText}>Create account</Text>
           </TouchableOpacity>
-        </View>
 
-        <View style={{ height: 120 }} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.bottomRow}>
+            <Text style={styles.smallText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => nav.navigate('Login')}>
+              <Text style={styles.linkText}> Sign in</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ height: 120 }} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: '#fff' },
   container: { flex: 1, backgroundColor: '#fff' },
   content: { padding: 16, paddingTop: 40 },
   title: { fontSize: 22, fontWeight: '700', color: '#1E66FF', marginBottom: 12 },

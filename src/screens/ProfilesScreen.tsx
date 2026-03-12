@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 
 const ROLES: Array<'admin'|'secretary'|'treasurer'|'member'> = ['admin','secretary','treasurer','member'];
@@ -75,7 +76,7 @@ export default function ProfilesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <TextInput
         placeholder="Search members..."
         value={q}
@@ -139,7 +140,7 @@ export default function ProfilesScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

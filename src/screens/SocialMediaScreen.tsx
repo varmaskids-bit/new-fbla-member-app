@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Alert, StyleSheet, Linking } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSocial } from '../context/SocialContext';
 
 export default function SocialMediaScreen() {
@@ -22,7 +23,7 @@ export default function SocialMediaScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={styles.row}>
         <TextInput value={platform} onChangeText={setPlatform} placeholder="Platform" style={styles.input} />
         <TextInput value={url} onChangeText={setUrl} placeholder="URL" style={styles.input} autoCapitalize="none" />
@@ -52,7 +53,7 @@ export default function SocialMediaScreen() {
           </View>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

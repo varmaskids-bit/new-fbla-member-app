@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEvents } from '../context/EventsContext';
 
 function pad(n:number){ return n.toString().padStart(2,'0'); }
@@ -61,7 +62,7 @@ export default function EventsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <FlatList
         data={events.sort((a,b)=>a.startISO.localeCompare(b.startISO))}
         keyExtractor={i=>i.id}
@@ -110,7 +111,7 @@ export default function EventsScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

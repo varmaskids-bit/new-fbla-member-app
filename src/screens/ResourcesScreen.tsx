@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity, StyleSheet, TextInput,
   FlatList, Alert, Modal, KeyboardAvoidingView, Platform
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import { useResources } from '../context/ResourcesContext';
 
@@ -77,7 +78,7 @@ export default function ResourcesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       {/* Breadcrumb */}
       <View style={styles.pathBar}>
         <TouchableOpacity onPress={rootBack}>
@@ -159,7 +160,7 @@ export default function ResourcesScreen() {
           </KeyboardAvoidingView>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

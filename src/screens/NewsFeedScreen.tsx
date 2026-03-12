@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNews } from '../context/NewsContext';
 
 export default function NewsFeedScreen() {
@@ -50,7 +51,7 @@ export default function NewsFeedScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.addBtn} onPress={startNew}>
           <Text style={styles.addText}>+ Announcement</Text>
@@ -94,7 +95,7 @@ export default function NewsFeedScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 
