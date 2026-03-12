@@ -11,6 +11,7 @@ import EventsScreen from '../screens/EventsScreen';
 import ResourcesScreen from '../screens/ResourcesScreen';
 import ProfilesScreen from '../screens/ProfilesScreen';
 import SocialMediaScreen from '../screens/SocialMediaScreen';
+import ChatScreen from '../screens/ChatScreen';
 import { useAuth } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ function TabIcon({ name, focused }: { name: string; focused: boolean }) {
     Resources: '📁',
     Profiles: '👥',
     Social: '🔗',
+    Chat: '💬',
   };
   return (
     <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{icons[name] ?? '•'}</Text>
@@ -57,6 +59,7 @@ function MainTabs() {
       <Tab.Screen name="Events" component={EventsScreen} />
       <Tab.Screen name="Resources" component={ResourcesScreen} />
       <Tab.Screen name="Profiles" component={ProfilesScreen} />
+      <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Social" component={SocialMediaScreen} />
     </Tab.Navigator>
   );

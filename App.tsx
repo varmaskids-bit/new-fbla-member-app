@@ -7,6 +7,7 @@ import { EventsProvider } from './src/context/EventsContext';
 import { ResourcesProvider } from './src/context/ResourcesContext';
 import { ProfilesProvider } from './src/context/ProfilesContext';
 import { SocialProvider } from './src/context/SocialContext';
+import { ChatProvider } from './src/context/ChatContext';
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
 interface ErrorBoundaryState { hasError: boolean; error: Error | null }
@@ -55,7 +56,9 @@ export default function App() {
             <ResourcesProvider>
               <ProfilesProvider>
                 <SocialProvider>
-                  <Navigation />
+                  <ChatProvider>
+                    <Navigation />
+                  </ChatProvider>
                 </SocialProvider>
               </ProfilesProvider>
             </ResourcesProvider>
