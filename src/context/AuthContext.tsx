@@ -9,7 +9,7 @@ type User = {
   grade?: string;
   chapter?: string;
   username?: string;
-  role: 'admin' | 'secretary' | 'treasurer' | 'member';
+  role: 'admin' | 'secretary' | 'treasurer' | 'dealer' | 'member';
 };
 
 type AuthState = {
@@ -68,6 +68,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             { id: 'u_treas', email: 'treasurer@chapter.org', password: 'pass123', username: 'treasurer', name: 'Carlos Nguyen', grade: '12', chapter: 'Central HS', role: 'treasurer' },
             { id: 'u_dana', email: 'dana@chapter.org', password: 'pass123', username: 'dana', name: 'Dana Lee', grade: '10', chapter: 'Central HS', role: 'member' },
             { id: 'u_evan', email: 'evan@chapter.org', password: 'pass123', username: 'evan', name: 'Evan Patel', grade: '9', chapter: 'Central HS', role: 'member' },
+            { id: 'u_dealer_test', email: 'dealer@test.org', password: 'pass123', username: 'dealer', name: 'Dealer Test', grade: '12', chapter: 'Central HS', role: 'dealer' },
+            { id: 'u_player_1', email: 'player1@test.org', password: 'pass123', username: 'player1', name: 'Player One', grade: '9', chapter: 'Central HS', role: 'member' },
+            { id: 'u_player_2', email: 'player2@test.org', password: 'pass123', username: 'player2', name: 'Player Two', grade: '10', chapter: 'Central HS', role: 'member' },
+            { id: 'u_player_3', email: 'player3@test.org', password: 'pass123', username: 'player3', name: 'Player Three', grade: '11', chapter: 'Central HS', role: 'member' },
+            { id: 'u_player_4', email: 'player4@test.org', password: 'pass123', username: 'player4', name: 'Player Four', grade: '12', chapter: 'Central HS', role: 'member' },
           ];
           const usersObj: Record<string, User> = {};
           samples.forEach(u => { usersObj[u.id] = u; });

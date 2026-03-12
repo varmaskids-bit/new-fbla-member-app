@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
-const ROLES: Array<'admin'|'secretary'|'treasurer'|'member'> = ['admin','secretary','treasurer','member'];
+const ROLES: Array<'admin'|'secretary'|'treasurer'|'dealer'|'member'> = ['admin','secretary','treasurer','dealer','member'];
 
 export default function RegisterScreen() {
   const auth = useAuth();
@@ -37,7 +37,7 @@ export default function RegisterScreen() {
   const [confirm, setConfirm] = React.useState('');
   const [showPass, setShowPass] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
-  const [role, setRole] = React.useState<'admin'|'secretary'|'treasurer'|'member'>('member');
+  const [role, setRole] = React.useState<'admin'|'secretary'|'treasurer'|'dealer'|'member'>('member');
 
   function validate(): string | null {
     if (!username.trim()) return 'Username is required';

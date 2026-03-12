@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, ScrollView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useEvents } from '../context/EventsContext';
 
 function pad(n:number){ return n.toString().padStart(2,'0'); }
@@ -17,6 +18,17 @@ export default function EventsScreen() {
   const [day,setDay]=React.useState(new Date().getDate());
   const [hour,setHour]=React.useState(9);
   const [minute,setMinute]=React.useState(0);
+  const [pickerMode, setPickerMode] = React.useState<'date' | 'time' | null>(null);
+
+  const eventDate = React.useMemo(() => new Date(year, month - 1, day, hour, minute), [year, month, day, hour, minute]);
+
+  function syncFromDate(next: Date) {
+    setYear(next.getFullYear());
+    setMonth(next.getMonth() + 1);
+    setDay(next.getDate());
+    setHour(next.getHours());
+    setMinute(next.getMinutes());
+  }
 
   function reset() {
     setEditingId(null);
@@ -41,6 +53,28 @@ export default function EventsScreen() {
     setHour(date.getHours());
     setMinute(date.getMinutes());
     setOpen(true);
+  }
+
+  function handlePickerChange(event: DateTimePickerEvent, selectedDate?: Date) {
+    if (Platform.OS !== 'ios') {
+      setPickerMode(null);
+    }
+    if (event.type === 'dismissed' || !selectedDate) {
+      return;
+    }
+
+    if (pickerMode === 'date') {
+      const merged = new Date(selectedDate);
+      merged.setHours(hour, minute, 0, 0);
+      syncFromDate(merged);
+      return;
+    }
+
+    if (pickerMode === 'time') {
+      const merged = new Date(eventDate);
+      merged.setHours(selectedDate.getHours(), selectedDate.getMinutes(), 0, 0);
+      syncFromDate(merged);
+    }
   }
 
   function save() {
@@ -68,7 +102,7 @@ export default function EventsScreen() {
         keyExtractor={i=>i.id}
         ListHeaderComponent={
           <TouchableOpacity style={styles.addBtn} onPress={openNew}>
-            <Text style={styles.addText}>+ Event</Text>
+            <Text style={styles.addText}>＋ Create Event</Text>
           </TouchableOpacity>
         }
         renderItem={({item}) => {
@@ -89,52 +123,51 @@ export default function EventsScreen() {
       />
 
       <Modal visible={open} animationType="slide" onRequestClose={()=>setOpen(false)}>
-        <View style={styles.modal}>
+        <ScrollView contentContainerStyle={styles.modal} keyboardShouldPersistTaps="handled">
           <Text style={styles.modalTitle}>{editingId?'Edit Event':'New Event'}</Text>
-          <TextInput placeholder="Title" value={title} onChangeText={setTitle} style={styles.input}/>
-          <TextInput placeholder="Description" value={description} onChangeText={setDescription} style={styles.input}/>
-          <TextInput placeholder="Location" value={location} onChangeText={setLocation} style={styles.input}/>
-          <View style={styles.row}>
-            <Text style={styles.label}>Date:</Text>
-            <NumberPicker value={year} setValue={setYear} min={2020} max={2030}/>
-            <NumberPicker value={month} setValue={setMonth} min={1} max={12}/>
-            <NumberPicker value={day} setValue={setDay} min={1} max={31}/>
-          </View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Time:</Text>
-              <NumberPicker value={hour} setValue={setHour} min={0} max={23}/>
-              <NumberPicker value={minute} setValue={setMinute} min={0} max={59} step={5}/>
+          <Text style={styles.helperText}>Use the fields below to give your event a clear title, location, and an easy-to-read start time.</Text>
+
+          <Text style={styles.fieldLabel}>Event title</Text>
+          <TextInput placeholder="Example: FBLA Chapter Mixer" value={title} onChangeText={setTitle} style={styles.input}/>
+
+          <Text style={styles.fieldLabel}>Description</Text>
+          <TextInput placeholder="Example: Join members for networking, snacks, and chapter updates." value={description} onChangeText={setDescription} style={[styles.input, styles.multilineInput]} multiline textAlignVertical="top"/>
+
+          <Text style={styles.fieldLabel}>Location</Text>
+          <TextInput placeholder="Example: Central HS Room 201 or Online Webinar" value={location} onChangeText={setLocation} style={styles.input}/>
+
+          <Text style={styles.fieldLabel}>Event date</Text>
+          <TouchableOpacity style={styles.nativePickerButton} onPress={() => setPickerMode('date')}>
+            <Text style={styles.nativePickerLabel}>Choose date</Text>
+            <Text style={styles.selectedValue}>{eventDate.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.fieldLabel}>Start time</Text>
+          <TouchableOpacity style={styles.nativePickerButton} onPress={() => setPickerMode('time')}>
+            <Text style={styles.nativePickerLabel}>Choose time</Text>
+            <Text style={styles.selectedValue}>{eventDate.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</Text>
+          </TouchableOpacity>
+
+          {pickerMode ? (
+            <View style={styles.nativePickerWrap}>
+              <DateTimePicker
+                value={eventDate}
+                mode={pickerMode}
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={handlePickerChange}
+              />
             </View>
+          ) : null}
+
           <View style={styles.actions}>
             <TouchableOpacity onPress={()=>{ setOpen(false); }} style={styles.cancel}><Text>Cancel</Text></TouchableOpacity>
             <TouchableOpacity onPress={save} style={styles.save}><Text style={{color:'#fff'}}>{editingId?'Update':'Create'}</Text></TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
       </Modal>
     </SafeAreaView>
   );
 }
-
-function NumberPicker({ value, setValue, min, max, step=1 }: { value:number; setValue:(v:number)=>void; min:number; max:number; step?:number }) {
-  const nums: number[] = [];
-  for (let i=min;i<=max;i+=step) nums.push(i);
-  return (
-    <View style={pickerStyles.wrap}>
-      <Text style={pickerStyles.current}>{value}</Text>
-      <View style={pickerStyles.buttons}>
-        <TouchableOpacity disabled={value<=min} onPress={()=>setValue(value - step)}><Text style={pickerStyles.btn}>-</Text></TouchableOpacity>
-        <TouchableOpacity disabled={value>=max} onPress={()=>setValue(value + step)}><Text style={pickerStyles.btn}>+</Text></TouchableOpacity>
-      </View>
-    </View>
-  );
-}
-
-const pickerStyles = StyleSheet.create({
-  wrap:{ alignItems:'center', marginHorizontal:6 },
-  current:{ fontSize:16, fontWeight:'600' },
-  buttons:{ flexDirection:'row', marginTop:4 },
-  btn:{ fontSize:18, paddingHorizontal:8 }
-});
 
 const styles = StyleSheet.create({
   container:{ flex:1, backgroundColor:'#fff', padding:12 },
@@ -145,11 +178,16 @@ const styles = StyleSheet.create({
   meta:{ color:'#555', marginTop:4 },
   location:{ color:'#1E66FF', marginTop:2 },
   delete:{ color:'#D00', fontWeight:'600', paddingLeft:12, alignSelf:'center' },
-  modal:{ flex:1, padding:16, backgroundColor:'#fff' },
+  modal:{ padding:16, backgroundColor:'#fff', paddingBottom:36 },
   modalTitle:{ fontSize:20, fontWeight:'700', marginBottom:12 },
-  input:{ borderWidth:1, borderColor:'#dbe9ff', padding:10, borderRadius:8, marginBottom:8 },
-  row:{ flexDirection:'row', alignItems:'center', marginVertical:6 },
-  label:{ width:50, fontWeight:'600' },
+  helperText:{ color:'#5b6b85', lineHeight:20, marginBottom:12 },
+  fieldLabel:{ fontWeight:'700', color:'#102a56', marginBottom:6 },
+  selectedValue:{ color:'#1E66FF', fontWeight:'600', marginBottom:10 },
+  nativePickerButton:{ borderWidth:1, borderColor:'#dbe9ff', borderRadius:12, padding:14, backgroundColor:'#fff', marginBottom:12 },
+  nativePickerLabel:{ color:'#5b6b85', fontSize:12, fontWeight:'600', marginBottom:6 },
+  nativePickerWrap:{ borderWidth:1, borderColor:'#dbe9ff', borderRadius:12, backgroundColor:'#fff', marginBottom:12, overflow:'hidden' },
+  input:{ borderWidth:1, borderColor:'#dbe9ff', padding:10, borderRadius:8, marginBottom:12 },
+  multilineInput:{ minHeight:90 },
   actions:{ flexDirection:'row', justifyContent:'flex-end', marginTop:12 },
   cancel:{ padding:12, marginRight:12 },
   save:{ backgroundColor:'#1E66FF', padding:12, borderRadius:8 }
