@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/logo.png')} style={{ width: 60, height: 15, marginLeft:175}} />
+      <Image source={require('../../assets/logo.png')} style={{ width: 120, height: 28, alignSelf: 'center', marginBottom: 8 }} resizeMode="contain" />
       <Text style={styles.title}>FBLA Member App</Text>
       <TextInput
         placeholder="Email or Username"

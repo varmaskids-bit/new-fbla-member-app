@@ -20,6 +20,7 @@ type AuthState = {
 type AuthContextValue = {
   users: Record<string, User>;
   currentUser: User | null;
+  isLoading: boolean;
   register: (
     email: string,
     password: string,
@@ -186,6 +187,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value: AuthContextValue = {
     users: state.users,
     currentUser: state.currentUserId ? state.users[state.currentUserId] ?? null : null,
+    isLoading: !loaded,
     register,
     login,
     logout,

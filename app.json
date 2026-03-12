@@ -29,9 +29,6 @@
       },
       "package": "com.varmapt1.fblaappfinal"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "plugins": [
       "expo-sqlite"
     ],
